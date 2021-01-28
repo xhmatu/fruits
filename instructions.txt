@@ -1,0 +1,45 @@
+Ajettava Qt:n 5.14 -versiolla.
+
+HUOMIO: klikkauksien välissä pidettävä n. sekunnin tauko, jottei tulisi Qt:n widgettiin liittyviä outoja bugeja (moni hedelmä ryhmitetään ja siirretään samaan neliöön).
+
+Ohjelman rakenne ja tehdyt suunnittelupäätökset:
+
+Ohjelma rakentuu satunnaisesti arvottujen lukujen varaan, jotka arvotaan ja siirretään fruit_numbers_-nimiseen vektoriin (joka sisältää siis lukuja sisältävän vektorin) generate_all_fruits()-metodin avulla. Arvotut luvut eivät saa vierellensä kahta samaa vierekkäistä lukua enempää samoja lukuja. Kun luvut on arvottu ja tallennettu vektoriin, kutsutaan draw_fruit_and_push_into_vector()-metodia, joka puolestaan kiinnittää Resources-kansiosta hedelmien kuvat QGraphicsPixmapItemeiksi siinä järjestyksessä, missä satunnaisesti arvotut luvut ovat first_numbers_-vektorissa. Jokainen satunnaisesti arvottu luku vastaa tiettyä hedelmää ja siten ne kiinnitetään uuteen vektori-rakenteeseen (fruits_) QGraphicsPixmapItem-muodossa. 
+
+Kun on olemassa kaksi vektoria, kutsutaan add_fruits_to_scene()-metodi, joka kiinnittää jokaisen fruits-vektorin hedelmäkuvan pelimaisemaan samanlaisessa järjestyksessä kuin missä hedelmät esiintyvät vektorissa. Tämän jälkeen pelaajalle näytetään peliruudun alapuolella ohjeet send_user_instructions(FIRST_INSTRUCTION)-metodia hyödyntäen. Ohjeissa neuvotaan pelaajaa painamaan hedelmiä. Koko pelin aikana peli antaa pelaajalle palautetta ja neuvoo häntä. 
+
+Pelaajan klikatessa hiiren oikeaa korvaa, käynnistyy eräänlainen luuppi. Aluksi kutsutaan mousePressEvent, joka lukee pelaajan hiiren koordinaatit klikkauksen kohdalla. Tämän jälkeen käynnistyy kello ja klikkauksien määrää aletaan laskemaan (number_of_clicks_-muuttujaan lisätään aina yksi luku). Riippuen siitä, kuinka mones klikkaus on menossa, jaetaan koordinaatit joko ensimmäiseen tai toiseen osaan. Jos klikkauksien määrä pariton, pelaajan painallus tulkitaan ensimmäiseksi, parilliset taas tulkitaan toisiksi painalluksiksi. Kun tällainen ero on tehty, tiedämme mikä on ensimmäinen ja toinen pelaajan valitsema hedelmä. 
+
+Kun koordinaatit on kerätty näin, kutsutaan check_chosen_fruit_positions()-metodia, jossa tarkistetaan pelaajan valinnat. Pelaaja näkee hänelle tarkoitetuista peliohjeista, painaako hän oikein vai valitseeko hän toisistaan liian kaukana olevia hedelmiä, jolloin vaihto ei tule onnistumaan. Metodi tarkistaa, voiko pelaajan hedelmät siirtää. Jos voidaan, asetetaan fruits_are_movable_-muuttujaan true, muutoin false. Tämän jälkeen palataan mousePressEvent-metodiin, jossa suoritetaan swap_fruits()-metodi, mikäli hedelmiä voidaan siirtää. 
+
+swap_fruits()-metodi vaihtaa vierekkäiset hedelmät, minkä jälkeen tarkistetaan (check_and_save_consecutive_fruits()-metodi), muodostuuko kolmen tai sitä useamman hedelmän joukkioita. Jos näin käy, niiden koordinaatit lisätään map-rakenteeseen, jossa on lukuja odottava vektori. check_and_save_consecutive_fruits()-metodin päätteeksi kutsutaan remove_consecutive_fruits()-metodi, jossa tarkistetaan, sisältääkö map-rakenne yhtäkään alkiota. Jos map-rakenne ei ole tyhjä, haetaan sen sisältämät koordinaatit, ja poistetaan sekä fruits_numbers_- että fruits_-vektoreista. Tämän lisäksi kuvat poistetaan pelimaisemasta (scene_). Jokaisen poiston yhteydessä lisätään points_-muuttujaan yksi luku, minkä jälkeen kutsutaan count_points()-metodi, joka lisää ne "lcd-näyttöön". 
+
+Tämän jälkeen remove_consecutive_fruits()-metodista kutsutaan which_fruits_to_drop()-metodi, joka tarkistaa, onko aihetta pudottaa hedelmiä ja merkkaa tulokset map-rakenteeseen sekä fruits_should_be_dropped_-bool muuttujaan. Kun tarkistus on suoritettu, kutsutaan drop_druits()-metodi, joka puolestaan kutsuu lopussa check_and_save_consecutive_fruits()-metodin, mikäli pudotettavaa löytyi ja näin tehdään niin kauan, että saavutaan siihen tilanteeseen, ettei mitään pudotettavaa tai poistettavaa löydy. Tähän päättyy luuppi, mikä alkaa taas kun pelaaja valitsee kaksi sopivaa hedelmää.
+
+En halunnut edes kokeilla opettajan videossa esittelemää käyttöliittymää, jossa piti valita, vaihtaako pysty- vai leveyssuunnassa hedelmiä ja sitten syöttää koordinaatteja. Sellaista käyttöliittymää en olisi kehdannut kenellekään esitellä, joten tämän parissa meni ehkä vähän turhankin paljon aikaa, kun tein kuvat ja hiiren painalluksiin perustuvan käyttöliittymän, mutta onhan tämä nyt parempi!    
+   
+
+Pelin säännöt:
+
+Aloita peli painamalla vasenta hiiren korvaa. Kun olet painanut hiirtä, kello alkaa käymään. Seuraa pelissä olevia ohjeita, jotka näytetään peliruudukon alla olevalla kentällä. Niissä sanotaan kaikki oleellinen. Pelaajan on tarkoitus valita hiirellä peliruudukosta (hedelmiä sisältävä ruutu) hedelmiä ja vaihtaa hedelmien paikkaa niin, että vaihdon jälkeen samat hedelmät muodostavat mahdollisimman suuren joukon. Kun tällaisessa - vaihdon jälkeen muodostuneessa - hedelmäjoukossa on vähintään kolme hedelmää (pysty- tai/ja leveyssuunnassa), ne poistetaan, minkä jälkeen niiden yläpuolella olevat hedelmät pudotetaan. Pudotus ja hedelmien poisto tapahtuu viiveellä. On tärkeää, ettei viiveen aikana hätäile ja klikkaa mitään, vaan odottaa, että hedelmien poisto tai pudotus suoritetaan loppuun. Viiveen saa pois valikosta kohdasta "Delay". Jokaisesta poistetusta hedelmästä saa yhden pisteen, mikäli hedelmiä saa poistettua yli kolme kappaletta kerralla, pisteet tuplataan. Hedelmiä valitessa pitää olla varovainen, että osuu oikeaan hedelmään, eikä hosu, mikäli viive on päällä.   
+
+Minimivaatimusten lisäski toteutettu seuraavat lisäominaisuudet:
+
+2. Käyttäjällä on mahdollisuus valita, onko hedelmien poistamisen ja putoamisen välillä viivettä vai ei. (5 p.)
+
+4. Pelissä käytetty aika lasketaan. Tälle on kaksi vaihtoehtoa, joista vain toinen arvostellaan:
+    Pelin aikana kerrotaan siihen mennessä kulunut aika. (10 p.)
+
+5. Pelissä on jonkinlainen pistelasku, esimerkiksi poistettujen hedelmien määrä tai täynnä olevien ruutujen määrä. Pistetilanne myös ilmoitetaan käyttäjälle. (5 p.)
+
+6. Jos vaihdon seurauksena löytyy enemmän kuin kolme samanlaista hedelmää peräkkäin, tämä otetaan huomioon jotenkin. Esimerkiksi poistetaan kaikki peräkkäiset samanlaiset hedelmät, ja annetaan pelaajalle sitä enemmän pisteitä, mitä enemmän hedelmiä hän saa poistettua kerralla. (10 p.)
+
+10. Neliöiden sijasta hedelmät näyttävät oikeilta hedelmiltä. Tätä varten pohjakoodissa on hedelmän kuvia .png-tiedostoina Resources-alihakemistossa. Kuvat konvertoidaan pikselikartaksi (QPixmap) ja asetetaan johonkin QLabel-olioon. Koodipohjassa on funktio draw_fruit, jonka avulla saat käsityksen siitä, miten nämä vaiheet voidaan toteuttaa. (15 p.)
+
+11. Vaihdettavat hedelmät valitaan klikkaamalla niitä. Tätä varten hedelmien pitäisi olla painonappeja, mutta näin isoa määrää painonappeja ei kannata määritellä .ui-tiedostossa, vaan asia pitäisi hoitaa koodissa. Muista ottaa huomioon, että pelaaja voi klikkailla myös ei-vierekkäisiä hedelmiä. Toteuta siis peli toimimaan järkevästi myös tällaisessa tilanteessa.
+
+Koodipohjassa on näytetty, miten labeleita voi lisätä käyttöliittymään ohjelmallisesti. Painonappien lisääminen tapahtuu vastaavalla tavalla. Lisäksi sinun tarvitsee saada hiiren tai kursorin sijainti. Tässä voit hyödyntää luokkaa QCursor ja sen metodia pos. (25 p.)
+
+
+
+
