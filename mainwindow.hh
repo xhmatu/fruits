@@ -1,17 +1,14 @@
 /*
 #############################################################################
-# COMP.CS.110 Programming 2: Autumn 2020                                    #
-# Project4: Match3 (GUI project)                                            #
-# File: mainwindow.hh                                                      #
+#                                                                           #
+# Project: fruits (GUI project)                                             #
+# File: mainwindow.hh                                                       #
 # Description: instruction.txt-tiedostossa lukee kaikki oleellinen.         #
 #                                                                           #
 #                                                                           #
 #        Ohjelman kirjoittaja                                               #
-#            * Nimi: Max Turunen                                            #
-#            * Opiskelijanumero: 95284                                      #
-#            * Käyttäjätunnus: xhmatu (Git-repositorion hakemistonimi. )    #
-#            * E-Mail: max.turunen@tuni.fi                                  #
-#            * Palautteen kieli (fi/en): fi                                 #
+#            Max Turunen                                                    #
+#                                                                           #
 #############################################################################
 */
 
