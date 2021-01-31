@@ -1,6 +1,6 @@
 Ajettava Qt:n 5.14.2 -versiolla.
 
-HUOMIO: klikkauksien välissä pidettävä n. sekunnin tauko, jottei tulisi Qt:n widgettiin liittyviä outoja bugeja (moni hedelmä ryhmitetään ja siirretään samaan neliöön).
+HUOMIO: klikkauksien välissä pidettävä n. puolen sekunnin tauko, jottei tulisi Qt:n widgettiin ja rinnakkaisrekursioon liittyviä outoja bugeja (moni hedelmä ryhmitetään ja siirretään samaan neliöön ensimmäiselle riville). Tämän korjaan myöhemmin.
 
 Ohjelman rakenne ja tehdyt suunnittelupäätökset:
 
